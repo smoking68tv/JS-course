@@ -98,9 +98,8 @@ function returnArgumentsArray() {
    console.log(newSum()) выведет 6
  */
 function bindFunction(fn, ...val) {
-    
     return () => { 
-        fn.apply(...val);
+        return fn.apply(this, val);
     };
 }
 
