@@ -36,10 +36,9 @@ function map(array, fn) {
  Посмотрите как работает reduce и повторите это поведение для массива, который будет передан в параметре array
  */
 function reduce(array, fn, initial) {
-    let length = array.length, 
-        prevValue = initial;
+    let prevValue = initial;
 
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < array.length; i++) {
         if (initial == undefined && i == 0) {
             prevValue = array[0];
             i++;
@@ -81,31 +80,56 @@ function upperProps(obj) {
  */
 function slice(array, from, to) {
     let Arr = [],
-        index = 0;
+        index = 0,
+        begin = 0,
+        end = array.length;
+        
+    let GetArr = (begin, end) => {
+        for (let i = begin; i < end; i++) {
+            Arr[index] = array[i];
+            ++index;
+        }
 
-    if (from > array.length) { // Если begin больше длины последовательности вернется пустой массив.
+        return Arr;
+    };
+
+    if (from > end) { // Если from больше длины последовательности вернется пустой массив.
         return Arr = [];
     }
-    if (from == undefined) { // Если begin неопределен, slice() начинает работать с индекса 0.
-        for (let i = 0; i < array.length; i++) {
-            Arr[index] = array[i];
-            ++index;
-        }
-    }
-    if (from < 0) { // Если индекс отрицательный, begin указывает смещение от конца последовательности
-        for (let i = array.length; i >= from; i--) {
-            Arr[index] = array[i];
-            ++index
-        }
-    } else {
-        for (let i = from; i < array.length; i++) {
-            Arr[index] = array[i];
-            ++index;
-        }
-    }
+    if (from === undefined || from < -array.length || from > array.length) { // Если from неопределен, slice() начинает работать с индекса 0.
+        if (to === undefined) {
+            return GetArr(begin, end);
+        } else if (to !== undefined) {
+            to < 0 ? end = Math.abs(to) - 1 : end = to;
 
-    // for(let i = 0; i < )
-    return Arr;
+            return GetArr(begin, end);
+        } else if (from !== undefined) {
+            return GetArr(begin, to);
+        } 
+
+        return GetArr(begin, end);
+    }
+    if (to < 0) { 
+        if (from >= 0) {
+            begin = from; 
+            end = array.length + to;
+
+            return GetArr(begin, end);
+        } else if (from < 0) {
+            begin = Math.abs(to);
+            end = Math.abs(from);
+
+            return GetArr(begin, end);
+            
+        }
+    } else if (from >= -array.length && from <= array.length && to >= -array.length && to <= array.length) {
+        begin = from; 
+        end = to;
+
+        return GetArr(begin, end);
+    } else {
+        return GetArr(from, array.length);
+    }
 }
 
 /*
