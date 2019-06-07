@@ -11,6 +11,11 @@
    createDivWithText('loftschool') // создаст элемент div, поместит в него 'loftschool' и вернет созданный элемент
  */
 function createDivWithText(text) {
+    let elem = document.createElement('DIV');
+
+    elem.textContent = text;
+
+    return elem;
 }
 
 /*
@@ -22,6 +27,7 @@ function createDivWithText(text) {
    prepend(document.querySelector('#one'), document.querySelector('#two')) // добавит элемент переданный первым аргументом в начало элемента переданного вторым аргументом
  */
 function prepend(what, where) {
+    return where.insertBefore(what, where.firstChild);
 }
 
 /*
@@ -44,6 +50,15 @@ function prepend(what, where) {
    findAllPSiblings(document.body) // функция должна вернуть массив с элементами div и span т.к. следующим соседом этих элементов является элемент с тегом P
  */
 function findAllPSiblings(where) {
+    let result = [];
+
+    for (let child of where.children ) {
+        if (child.nextElementSibling && child.nextElementSibling.tagName == 'P') {
+            result.push(child);
+        }
+    }
+
+    return result;
 }
 
 /*
@@ -67,7 +82,9 @@ function findError(where) {
     var result = [];
 
     for (var child of where.childNodes) {
-        result.push(child.innerText);
+        if (child.nodeType === 1) {
+            result.push(child.textContent);
+        }  
     }
 
     return result;
@@ -86,6 +103,11 @@ function findError(where) {
    должно быть преобразовано в <div></div><p></p>
  */
 function deleteTextNodes(where) {
+    for (var child of where.childNodes) {
+        if (child.nodeType === 3) {
+            where.removeChild(child);
+        }
+    }
 }
 
 /*
@@ -100,6 +122,14 @@ function deleteTextNodes(where) {
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 function deleteTextNodesRecursive(where) {
+    for (let i = 0; i < where.childNodes.length; i++) {
+        if (where.childNodes[i].nodeType === 1) {
+            deleteTextNodesRecursive(where.childNodes[i]);
+        } else if (where.childNodes[i].nodeType === 3) {
+            where.removeChild(where.childNodes[i]);
+            i--;
+        }
+    }
 }
 
 /*
