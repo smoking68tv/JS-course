@@ -48,39 +48,22 @@ function createDiv() {
    addListeners(newDiv);
  */
 function addListeners(target) {
-    // let that = this;
+    target.addEventListener('ondragstart', () => false)
+    target.addEventListener('onmousedown', e => {
+        target.style.position = 'absolute';
+        target.style.left = e.pageX - target.offsetWidth / 2 + 'px';
+        target.style.top = e.pageY - target.offsetHeight / 2 + 'px';
 
-    // target.setAttribute('draggable', 'true');
-    // target.addEventListener('dragstart', e => {
-    //     that = this;
-    //     e.dataTransfer.effectAllowed = 'move';
-    //     e.dataTransfer.setData('text/html', this.innerHTML);
-    // }, false);
-    // target.addEventListener('dragenter', e => {
-    //     e.classList.add('over');
-    // }, false);
-    // target.addEventListener('dragover', e => {
-    //     if (e.preventDefault) {
-    //         e.preventDefault();
-    //     }
-    // }, false);
-    // target.addEventListener('dragleave', e => {
-    //     e.classList.remove('over');
-    // }, false);
-    // target.addEventListener('drop', e => {
-    //     if (e.stopPropagation) {
-    //         e.stopPropagation();
-    //     }
-    //     if (that != this) {
-    //         that.innerHTML = this.innerHTML;
-    //         this.innerHTML = e.dataTransfer.getData('text/html');
-    //     }
-
-    //     return false;
-    // }, false);
-    // target.addEventListener('dragend', e => {
-    //     e.classList.remove('over');
-    // }, false);
+        document.body.appendChild(target);
+        document.addEventListener('onmousemove', e => {
+            target.style.left = e.pageX - target.offsetWidth / 2 + 'px';
+            target.style.top = e.pageY - target.offsetHeight / 2 + 'px';
+        });
+        target.addEventListener('onmouseup', () => {
+            document.onmousemove = null;
+            target.onmouseup = null;
+        });
+    });
 }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
