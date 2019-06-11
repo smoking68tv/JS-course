@@ -36,6 +36,8 @@ function createDiv() {
     div.style.top = `${Math.random() * 100}px`;
     div.style.left = `${Math.random() * 100}px`;
 
+
+
     return div;
 }
 
@@ -47,23 +49,27 @@ function createDiv() {
    homeworkContainer.appendChild(newDiv);
    addListeners(newDiv);
  */
+let currentDrag;
+let startX = 0;
+let startY = 0;
+
+document.addEventListener('mousemove', e => {
+    if (currentDrag) {
+        currentDrag.style.top = (e.clientY - startY) + 'px';
+        currentDrag.style.left = (e.clientX - startX) + 'px';
+    }
+});
 function addListeners(target) {
+
     target.addEventListener('ondragstart', () => false)
-    target.addEventListener('onmousedown', e => {
-        target.style.position = 'absolute';
-        target.style.left = e.pageX - target.offsetWidth / 2 + 'px';
-        target.style.top = e.pageY - target.offsetHeight / 2 + 'px';
+    target.addEventListener('mousedown', e => {
+        currentDrag = target;
+        startX = e.offsetX;
+        startY = e.offsetY;
 
         document.body.appendChild(target);
-        document.addEventListener('onmousemove', e => {
-            target.style.left = e.pageX - target.offsetWidth / 2 + 'px';
-            target.style.top = e.pageY - target.offsetHeight / 2 + 'px';
-        });
-        target.addEventListener('onmouseup', () => {
-            document.onmousemove = null;
-            target.onmouseup = null;
-        });
     });
+    target.addEventListener('mouseup', () => currentDrag = false );
 }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
