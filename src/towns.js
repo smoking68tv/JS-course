@@ -46,8 +46,6 @@ function loadTowns() {
         xhr.addEventListener('load', () => {
             const towns = xhr.response;
 
-            loadingBlock.textContent = '';
-            filterBlock.removeAttribute('style');
             resolve(towns.sort((a, b) => {
                 if (a.name < b.name) {
                     return -1;
@@ -64,19 +62,23 @@ function loadTowns() {
 
     });
 }
-let arrTowns;
+let arrTowns = [];
 
 window.addEventListener('load', () => {
-    arrTowns = loadTowns()
-    // .then((towns) => {
-    //     loadingBlock.textContent = '';
-    //     filterBlock.removeAttribute('style');
-    //     for (let i in towns) {
+    let count = 0;
 
-    //     }
-    // }).catch(() => {
-    //     console.error('error')
-    // });
+    loadTowns()
+        .then((towns) => {
+            loadingBlock.textContent = '';
+            filterBlock.removeAttribute('style');
+            for (let i of towns) {
+                arrTowns[count] = i.name;
+                count++;
+            }
+        })
+        .catch(() => {
+            console.error('error');
+        });
 });
 /*
  Функция должна проверять встречается ли подстрока chunk в строке full
@@ -109,13 +111,12 @@ filterInput.addEventListener('keyup', function() {
     while (filterResult.firstChild ) {
         filterResult.removeChild(filterResult.firstChild);
     }
-    arrTowns.then(towns => {
-        for (let i in towns) {
-            if (isMatching(towns[i].name, filterInput.value) && filterInput.value !== '') {
-                filterResult.appendChild(document.createElement('li')).textContent = towns[i].name;
-            }
+    for (let towns of arrTowns) {
+        if (isMatching(towns, filterInput.value) && filterInput.value !== '') {
+            filterResult.appendChild(document.createElement('li')).textContent = towns;
         }
-    });
+    }
+
 });
 
 export {
