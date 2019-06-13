@@ -43,12 +43,11 @@ function loadTowns() {
         xhr.open('GET', ' https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
         xhr.responseType = 'json';
         xhr.send();
-        loadingBlock.textContent = 'Загрузка...';
         xhr.addEventListener('load', () => {
             const towns = xhr.response;
 
-            console.log('in loadTowns');
             loadingBlock.textContent = '';
+            filterBlock.removeAttribute('style');
             resolve(towns.sort((a, b) => {
                 if (a.name < b.name) {
                     return -1;
@@ -60,9 +59,25 @@ function loadTowns() {
                 return 0;
             }));
         });
+        xhr.addEventListener('error', reject);
+        xhr.addEventListener('abort', reject);
+
     });
 }
+let arrTowns;
 
+window.addEventListener('load', () => {
+    arrTowns = loadTowns()
+    // .then((towns) => {
+    //     loadingBlock.textContent = '';
+    //     filterBlock.removeAttribute('style');
+    //     for (let i in towns) {
+
+    //     }
+    // }).catch(() => {
+    //     console.error('error')
+    // });
+});
 /*
  Функция должна проверять встречается ли подстрока chunk в строке full
  Проверка должна происходить без учета регистра символов
@@ -85,11 +100,22 @@ const filterBlock = homeworkContainer.querySelector('#filter-block');
 /* Текстовое поле для поиска по городам */
 const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
-const filterResult = homeworkContainer.querySelector('#filter-result');
+const filterResult = homeworkContainer.querySelector('#filter-result').appendChild(document.createElement('UL'));
 
-filterInput.addEventListener('keyup', function(event) {
+// filterResult.appendChild(document.createElement('UL'));
+
+filterInput.addEventListener('keyup', function() {
     // это обработчик нажатия кливиш в текстовом поле
-    console.log(event);
+    while (filterResult.firstChild ) {
+        filterResult.removeChild(filterResult.firstChild);
+    }
+    arrTowns.then(towns => {
+        for (let i in towns) {
+            if (isMatching(towns[i].name, filterInput.value) && filterInput.value !== '') {
+                filterResult.appendChild(document.createElement('li')).textContent = towns[i].name;
+            }
+        }
+    });
 });
 
 export {
