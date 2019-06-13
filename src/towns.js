@@ -40,7 +40,7 @@ function loadTowns() {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
 
-        xhr.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
+        xhr.open('GET', 'https://raw.githubusercontent.com/smelukov/ciiesTest/master/cities.json');
         xhr.responseType = 'json';
         xhr.send();
         xhr.addEventListener('load', () => {
@@ -91,6 +91,7 @@ window.addEventListener('load', () => {
 buttonRepeat.addEventListener('click', () => {
     let count = 0;
 
+    loadingBlock.textContent = 'Загрузка...';
     loadTowns()
         .then((towns) => {
             homeworkContainer.removeChild(buttonRepeat); 
@@ -101,7 +102,7 @@ buttonRepeat.addEventListener('click', () => {
                 count++;
             }
         })
-        .catch(() => '');
+        .catch(() => loadingBlock.textContent = 'Не удалось загрузить города....');
 });
 
 /*
