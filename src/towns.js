@@ -40,30 +40,37 @@ function loadTowns() {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
 
-        xhr.open('GET', ' https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
+        xhr.open('GET', 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json');
         xhr.responseType = 'json';
         xhr.send();
         xhr.addEventListener('load', () => {
             const towns = xhr.response;
 
-            resolve(towns.sort((a, b) => {
-                if (a.name < b.name) {
-                    return -1;
-                }
-                if (a.name > b.name) {
-                    return 1;
-                }
-                
-                return 0;
-            }));
+            if (xhr.status >= 400) {
+                reject();
+            } else {
+                resolve(towns.sort((a, b) => {
+                    if (a.name < b.name) {
+                        return -1;
+                    }
+                    if (a.name > b.name) {
+                        return 1;
+                    }
+                    
+                    return 0;
+                }));
+            }
+            
         });
         xhr.addEventListener('error', reject);
         xhr.addEventListener('abort', reject);
 
     });
 }
-let arrTowns = [];
+let arrTowns = [],
+    buttonRepeat = document.createElement('button');
 
+buttonRepeat.textContent = 'Повторить';
 window.addEventListener('load', () => {
     let count = 0;
 
@@ -77,9 +84,26 @@ window.addEventListener('load', () => {
             }
         })
         .catch(() => {
-            console.error('error');
+            loadingBlock.textContent = 'Не удалось загрузить города....';
+            homeworkContainer.appendChild(buttonRepeat);      
         });
 });
+buttonRepeat.addEventListener('click', () => {
+    let count = 0;
+
+    loadTowns()
+        .then((towns) => {
+            homeworkContainer.removeChild(buttonRepeat); 
+            loadingBlock.textContent = '';
+            filterBlock.removeAttribute('style');
+            for (let i of towns) {
+                arrTowns[count] = i.name;
+                count++;
+            }
+        })
+        .catch(() => '');
+});
+
 /*
  Функция должна проверять встречается ли подстрока chunk в строке full
  Проверка должна происходить без учета регистра символов
