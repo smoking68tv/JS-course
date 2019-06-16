@@ -71,7 +71,6 @@ window.addEventListener('load', () => {
     createTable(cookies);
 })
 function createTable(tableCookies) {
-    // console.log(document.cookie)
     listTable.textContent = '';
     for (let cookie in tableCookies) {       
         if (tableCookies.hasOwnProperty(cookie)) {     
@@ -99,18 +98,13 @@ addButton.addEventListener('click', () => {
     if (addNameInput.value != '' && addValueInput.value != '') {
         document.cookie = `${addNameInput.value}=${addValueInput.value}`;
         cookies = parseCookie();
-
-        if (!isInclude(addNameInput.value, filterNameInput.value) && 
+        cookies[addNameInput.value] = addValueInput.value;
+        if (cookies.hasOwnProperty(addNameInput.value) && 
         !isInclude(addValueInput.value, filterNameInput.value)) {
-            cookies[addNameInput.value] = addValueInput.value;
-        } else if (cookies.hasOwnProperty(addNameInput.value) && 
-        !isInclude(addValueInput.value, filterNameInput.value)) {
-            cookies[addNameInput.value] = addValueInput.value;
             delete filterCookies[addNameInput.value];
             createTable(filterCookies);
         } else if (isInclude(addNameInput.value, filterNameInput.value) && 
         isInclude(addValueInput.value, filterNameInput.value)) {
-            cookies[addNameInput.value] = addValueInput.value;
             createTable(cookies);
         }
     }
