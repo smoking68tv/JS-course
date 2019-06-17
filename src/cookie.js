@@ -103,13 +103,12 @@ addButton.addEventListener('click', () => {
         !isInclude(addValueInput.value, filterNameInput.value)) {
             delete filterCookies[addNameInput.value];
             createTable(filterCookies);
-        } else if (isInclude(addNameInput.value, filterNameInput.value) && 
+        } else if (isInclude(addNameInput.value, filterNameInput.value) || 
         isInclude(addValueInput.value, filterNameInput.value)) {
-            createTable(cookies);
+            cookiesFilter();
+            createTable(filterCookies);
         }
     }
-    addNameInput.value = '';
-    addValueInput.value = '';
 });
 
 function parseCookie () {
